@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import * as seed from '../data/seed';
 import type { Container, Grant, Status, Task, User } from '../types';
 import { createContainerSlice, type ContainerActions } from './containerSlice';
+import { createGrantSlice, type GrantActions } from './grantSlice';
 import { createStatusSlice, type StatusActions } from './statusSlice';
 import { createTaskSlice, type TaskActions } from './taskSlice';
 
@@ -21,7 +22,7 @@ interface SessionActions {
   resetDemo: () => void;
 }
 
-export type Store = DataState & SessionActions & ContainerActions & StatusActions & TaskActions;
+export type Store = DataState & SessionActions & ContainerActions & GrantActions & StatusActions & TaskActions;
 
 export type SliceCreator<T> = (set: StoreApi<Store>['setState'], get: StoreApi<Store>['getState']) => T;
 
@@ -42,6 +43,7 @@ export const useStore = create<Store>()(
       switchUser: (userId) => set({ currentUserId: userId }),
       resetDemo: () => set(initialData()),
       ...createContainerSlice(set, get),
+      ...createGrantSlice(set, get),
       ...createStatusSlice(set, get),
       ...createTaskSlice(set, get),
     }),

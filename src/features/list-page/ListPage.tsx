@@ -1,6 +1,6 @@
 import { ChevronRight, Lock, Plus } from 'lucide-react';
 import { Fragment, useState } from 'react';
-import { useCurrentUser, useListData } from '../../store/hooks';
+import { useCurrentUser, useListData, useVisibleLists } from '../../store/hooks';
 import { canManageContainers } from '../../store/permissions';
 import { ancestorsOf, type ListData } from '../../store/selectors';
 import { useStore } from '../../store/store';
@@ -9,19 +9,25 @@ import { Button } from '../../ui/Button';
 import { EmptyState } from '../../ui/EmptyState';
 import { Board } from '../board/Board';
 import { ListView } from '../list/ListView';
+import { ShareButton } from '../sharing/ShareDialog';
 import { StatusManager } from '../statuses/StatusManager';
 import { ViewToggle } from './ViewToggle';
 
 export function ListPage() {
   const listId = useUI((s) => s.selectedListId);
+  const selectList = useUI((s) => s.selectList);
   const result = useListData(listId);
+  const fallback = useVisibleLists()[0]?.list;
 
   if (!result) {
     return <EmptyState title="No list selected">Choose a list from the sidebar to view its tasks.</EmptyState>;
   }
   if (result.error) {
     return (
-      <EmptyState title={result.error.code === 'FORBIDDEN' ? 'No access' : 'List unavailable'}>
+      <EmptyState
+        title={result.error.code === 'FORBIDDEN' ? 'No access' : 'List unavailable'}
+        action={fallback && <Button onClick={() => selectList(fallback.id)}>Open {fallback.name}</Button>}
+      >
         {result.error.message}
       </EmptyState>
     );
@@ -62,7 +68,12 @@ function ListContent({ data }: { data: ListData }) {
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <ViewToggle />
-          {canManage && <StatusManager listId={list.id} statuses={statuses} />}
+          {canManage && (
+            <>
+              <ShareButton node={list} />
+              <StatusManager listId={list.id} statuses={statuses} />
+            </>
+          )}
           <Button variant="primary" onClick={() => setComposeIn(statuses[0]?.id ?? null)}>
             <Plus className="size-3.5" />
             New task

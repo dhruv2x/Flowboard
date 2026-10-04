@@ -1,10 +1,8 @@
 import { Menu } from 'lucide-react';
-import { useCurrentUser } from '../../store/hooks';
 import { useUI } from '../../store/ui';
-import { Avatar } from '../../ui/Avatar';
+import { UserSwitcher } from './UserSwitcher';
 
 export function TopBar() {
-  const user = useCurrentUser();
   const sidebarOpen = useUI((s) => s.sidebarOpen);
   const setSidebarOpen = useUI((s) => s.setSidebarOpen);
 
@@ -19,12 +17,8 @@ export function TopBar() {
       >
         <Menu className="size-4" />
       </button>
-      <div className="ml-auto flex items-center gap-2">
-        <Avatar user={user} size="md" />
-        <span className="hidden font-medium sm:inline">{user.name}</span>
-        <span className="rounded-full bg-surface-muted px-2 text-2xs font-medium capitalize text-fg-secondary">
-          {user.role}
-        </span>
+      <div className="ml-auto">
+        <UserSwitcher />
       </div>
     </header>
   );

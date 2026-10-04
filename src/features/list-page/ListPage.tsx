@@ -8,6 +8,7 @@ import { ancestorsOf, type ListData } from '../../store/selectors';
 import { useStore } from '../../store/store';
 import { useUI } from '../../store/ui';
 import { Button } from '../../ui/Button';
+import { BoardIllustration } from '../../ui/BoardIllustration';
 import { EmptyState } from '../../ui/EmptyState';
 import { Board } from '../board/Board';
 import { ListView } from '../list/ListView';
@@ -19,6 +20,7 @@ import { ViewToggle } from './ViewToggle';
 export function ListPage() {
   const listId = useUI((s) => s.selectedListId);
   const selectList = useUI((s) => s.selectList);
+  const setSidebarOpen = useUI((s) => s.setSidebarOpen);
   const view = useUI((s) => s.view);
   const result = useListData(listId);
   const fallback = useVisibleLists()[0]?.list;
@@ -26,7 +28,19 @@ export function ListPage() {
 
   if (!ready) return <ListPageSkeleton view={view} />;
   if (!result) {
-    return <EmptyState title="No list selected">Choose a list from the sidebar to view its tasks.</EmptyState>;
+    return (
+      <EmptyState
+        title="Pick a list to get started"
+        illustration={<BoardIllustration />}
+        action={
+          <Button className="md:hidden" onClick={() => setSidebarOpen(true)}>
+            Browse lists
+          </Button>
+        }
+      >
+        Choose a list from the sidebar to see its tasks on a board or in a table.
+      </EmptyState>
+    );
   }
   if (result.error) {
     return (

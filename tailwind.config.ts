@@ -34,6 +34,15 @@ export default {
         lift: '0 2px 6px -2px rgba(16,16,20,0.08), 0 10px 28px -8px rgba(16,16,20,0.18)',
         drawer: '-16px 0 40px -16px rgba(16,16,20,0.2)',
       },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0) rotate(-4deg)' },
+          '50%': { transform: 'translateY(-5px) rotate(-2deg)' },
+        },
+      },
+      animation: {
+        float: 'float 3.2s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

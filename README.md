@@ -2,6 +2,8 @@
 
 Flowboard is a small project-management app, like a mini Trello or ClickUp, for one team.
 
+**Live demo:** https://flowboard-hq.vercel.app/
+
 You can:
 
 - organise work in a tree: **space → folder → list**
@@ -249,14 +251,6 @@ What I kept simple or left out, and why:
 **Tool:** Claude Opus is used as a pair programmer to set up the initial skeleton and handle code that didn’t need much of my own judgment.
 
 **How I worked:** Broke the project down into small pieces (check the commit history) and spent a lot of time digging into the why and what behind each decision to actually understand the choices I was making.
-
-**Where it helped**
-
-- Setting up the project and organising the store and permission checks
-- Drag and drop on the tree, board and status list, including keyboard support
-- Testing changes in a real browser: drag paths, sorting, each user's access, phone sizes
-- Explaining choices when I asked, e.g. why statuses have categories
-- Writing testcases 
 
 **Where I corrected it**
 

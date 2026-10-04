@@ -10,12 +10,15 @@ import {
   type UniqueIdentifier,
 } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import clsx from 'clsx';
 import { Plus } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
+import { useSimulatedLoad } from '../../hooks/useSimulatedLoad';
 import { canManageContainers } from '../../store/permissions';
 import { useCurrentUser, useTree } from '../../store/hooks';
 import { useStore } from '../../store/store';
 import { IconButton } from '../../ui/IconButton';
+import { Skeleton } from '../../ui/Skeleton';
 import { report } from '../../ui/toast';
 import { TreeGroup } from './Tree';
 import { TreeContext, type Editing } from './TreeContext';
@@ -29,6 +32,7 @@ export function WorkspaceTree() {
   const canManage = canManageContainers(useCurrentUser());
   const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
   const [editing, setEditing] = useState<Editing | null>(null);
+  const ready = useSimulatedLoad('workspace');
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -71,6 +75,7 @@ export function WorkspaceTree() {
     report(reorderContainers(arrayMove(ids, ids.indexOf(String(active.id)), ids.indexOf(String(over.id)))));
   };
 
+  if (!ready) return <TreeSkeleton />;
   if (!workspace) return null;
 
   return (
@@ -92,5 +97,26 @@ export function WorkspaceTree() {
         <TreeGroup parentId={workspace.id} depth={0} />
       </DndContext>
     </TreeContext.Provider>
+  );
+}
+
+// Indent levels and widths loosely mirror a real space › folder › list tree.
+const SKELETON_ROWS = [
+  ['ml-2', 'w-24'],
+  ['ml-6', 'w-20'],
+  ['ml-10', 'w-16'],
+  ['ml-10', 'w-24'],
+  ['ml-2', 'w-20'],
+  ['ml-6', 'w-28'],
+];
+
+function TreeSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading workspace" className="space-y-3 px-2 pt-2">
+      <Skeleton className="mb-4 h-2.5 w-12" />
+      {SKELETON_ROWS.map(([indent, width], i) => (
+        <Skeleton key={i} className={clsx('h-3', indent, width)} />
+      ))}
+    </div>
   );
 }

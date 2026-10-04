@@ -1,5 +1,7 @@
 import { Menu } from 'lucide-react';
 import { useUI } from '../../store/ui';
+import { SearchField } from './SearchField';
+import { ShortcutsButton } from './ShortcutsButton';
 import { UserSwitcher } from './UserSwitcher';
 
 export function TopBar() {
@@ -7,7 +9,7 @@ export function TopBar() {
   const setSidebarOpen = useUI((s) => s.setSidebarOpen);
 
   return (
-    <header className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-line px-4">
+    <header className="flex h-12 shrink-0 items-center gap-3 border-b border-line px-4">
       <button
         onClick={() => setSidebarOpen(true)}
         aria-label="Open sidebar"
@@ -17,7 +19,9 @@ export function TopBar() {
       >
         <Menu className="size-4" />
       </button>
-      <div className="ml-auto">
+      <SearchField />
+      <div className="ml-auto flex items-center gap-1">
+        <ShortcutsButton />
         <UserSwitcher />
       </div>
     </header>

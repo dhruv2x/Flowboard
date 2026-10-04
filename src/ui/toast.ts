@@ -33,3 +33,5 @@ export function report<T>(result: Result<T>): result is { data: T } {
   }
   return true;
 }
+
+export const notify = (message: string) => useToasts.getState().push('success', message);

@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { initials } from '../../lib/format';
 import { useStore } from '../../store/store';
 import { useUI } from '../../store/ui';
+import { ArchivePanel } from '../sidebar/ArchivePanel';
+import { WorkspaceTree } from '../sidebar/WorkspaceTree';
 
 export function Sidebar() {
   const workspace = useStore((s) => s.containers.find((c) => c.type === 'workspace'));
@@ -37,8 +39,9 @@ export function Sidebar() {
           <span className="truncate text-sm font-semibold">{workspace?.name}</span>
         </div>
         <nav aria-label="Workspace" className="min-h-0 flex-1 overflow-y-auto px-2 py-3">
-          <p className="px-2 pb-1 text-xs font-medium text-fg-muted">Spaces</p>
+          <WorkspaceTree />
         </nav>
+        <ArchivePanel />
       </aside>
     </>
   );

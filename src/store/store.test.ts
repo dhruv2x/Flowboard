@@ -7,17 +7,17 @@ beforeEach(() => store().resetDemo());
 
 describe('store access checks', () => {
   it('lets members change tasks only in lists they can see', () => {
-    store().switchUser('u_bob');
+    store().switchUser('u_rohan');
     expect(store().updateTask('t_1', { title: 'Renamed' }).error).toBeUndefined(); // Backlog
     expect(store().updateTask('t_10', { title: 'Renamed' }).error?.code).toBe('FORBIDDEN'); // Sprint 14
     expect(store().moveTask('t_1', { listId: 'ls_sprint' }).error?.code).toBe('FORBIDDEN');
   });
 
   it('reserves structural changes for admins', () => {
-    store().switchUser('u_bob');
-    expect(store().createContainer('ws_north', 'Design').error?.code).toBe('FORBIDDEN');
-    store().switchUser('u_alice');
-    expect(store().createContainer('ws_north', 'Design').data?.type).toBe('space');
+    store().switchUser('u_rohan');
+    expect(store().createContainer('ws_hq', 'Design').error?.code).toBe('FORBIDDEN');
+    store().switchUser('u_aarav');
+    expect(store().createContainer('ws_hq', 'Design').data?.type).toBe('space');
   });
 
   it('treats archived lists as not found', () => {

@@ -3,10 +3,16 @@ import clsx from 'clsx';
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-export function MenuPanel({ children, className }: { children: ReactNode; className?: string }) {
+interface PanelProps {
+  children: ReactNode;
+  className?: string;
+  align?: 'start' | 'end';
+}
+
+export function MenuPanel({ children, className, align = 'end' }: PanelProps) {
   return (
     <MenuItems
-      anchor={{ to: 'bottom end', gap: 4 }}
+      anchor={{ to: `bottom ${align}`, gap: 4 }}
       className={clsx('z-50 min-w-44 rounded-lg border border-line bg-surface p-1 shadow-lift focus:outline-none', className)}
     >
       {children}

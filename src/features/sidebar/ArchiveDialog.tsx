@@ -1,20 +1,19 @@
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import clsx from 'clsx';
-import { Archive, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { useCurrentUser } from '../../store/hooks';
-import { canManageContainers } from '../../store/permissions';
 import { ancestorsOf } from '../../store/selectors';
 import { useStore } from '../../store/store';
 import type { Container } from '../../types';
+import { Button } from '../../ui/Button';
 import { IconButton } from '../../ui/IconButton';
 import { notify, report } from '../../ui/toast';
 
 const textButton =
   'rounded px-2 py-1 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent';
 
-export function ArchivePanel() {
-  const user = useCurrentUser();
+/** Admin dialog listing archived containers, newest first, with restore and permanent delete. */
+export function ArchiveDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const containers = useStore((s) => s.containers);
 
   const archived = useMemo(
@@ -22,26 +21,33 @@ export function ArchivePanel() {
     [containers],
   );
 
-  if (!canManageContainers(user)) return null;
-
   return (
-    <Popover className="border-t border-line p-2">
-      <PopoverButton className="flex h-7 w-full items-center gap-2 rounded-md px-2 text-fg-secondary hover:bg-surface-muted hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent data-[open]:bg-surface-muted">
-        <Archive className="size-3.5 text-fg-faint" />
-        Archive
-        <span className="ml-auto text-xs tabular-nums text-fg-faint">{archived.length}</span>
-      </PopoverButton>
-      <PopoverPanel
-        anchor={{ to: 'top start', gap: 6 }}
-        className="z-50 max-h-80 w-80 overflow-y-auto rounded-lg border border-line bg-surface p-1 shadow-lift focus:outline-none"
-      >
-        {archived.length === 0 ? (
-          <p className="px-2 py-4 text-center text-xs text-fg-muted">Archived spaces, folders and lists appear here.</p>
-        ) : (
-          archived.map((node) => <ArchivedRow key={node.id} node={node} containers={containers} />)
-        )}
-      </PopoverPanel>
-    </Popover>
+    <Dialog open={open} onClose={onClose} className="relative z-50">
+      <DialogBackdrop transition className="fixed inset-0 bg-fg/20 transition-opacity duration-150 data-[closed]:opacity-0" />
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <DialogPanel
+          transition
+          className="flex max-h-[80vh] w-full max-w-md flex-col rounded-xl border border-line bg-surface shadow-lift transition duration-150 data-[closed]:scale-95 data-[closed]:opacity-0"
+        >
+          <header className="px-5 pt-5">
+            <DialogTitle className="text-base font-semibold">Archive</DialogTitle>
+            <p className="mt-0.5 text-xs text-fg-muted">Restore archived spaces, folders and lists, or delete them for good.</p>
+          </header>
+          <div className="mt-3 min-h-0 flex-1 overflow-y-auto px-3">
+            {archived.length === 0 ? (
+              <p className="px-2 py-8 text-center text-xs text-fg-muted">Nothing is archived.</p>
+            ) : (
+              archived.map((node) => <ArchivedRow key={node.id} node={node} containers={containers} />)
+            )}
+          </div>
+          <footer className="mt-3 flex justify-end border-t border-line px-5 py-4">
+            <Button variant="primary" onClick={onClose}>
+              Done
+            </Button>
+          </footer>
+        </DialogPanel>
+      </div>
+    </Dialog>
   );
 }
 

@@ -47,6 +47,20 @@ export const useStore = create<Store>()(
       ...createStatusSlice(set, get),
       ...createTaskSlice(set, get),
     }),
-    { name: 'flowboard:data', version: 1 },
+    {
+      name: 'flowboard:data',
+      // Bump when the seed or schema changes; older saved data is replaced with the new seed.
+      version: 2,
+      partialize: ({ users, containers, statuses, tasks, grants, currentUserId, nextTaskNumber }): DataState => ({
+        users,
+        containers,
+        statuses,
+        tasks,
+        grants,
+        currentUserId,
+        nextTaskNumber,
+      }),
+      migrate: () => initialData(),
+    },
   ),
 );

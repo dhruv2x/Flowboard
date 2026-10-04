@@ -1,13 +1,10 @@
 import clsx from 'clsx';
 import { useEffect } from 'react';
-import { initials } from '../../lib/format';
-import { useStore } from '../../store/store';
 import { useUI } from '../../store/ui';
-import { ArchivePanel } from '../sidebar/ArchivePanel';
 import { WorkspaceTree } from '../sidebar/WorkspaceTree';
+import { WorkspaceMenu } from './WorkspaceMenu';
 
 export function Sidebar() {
-  const workspace = useStore((s) => s.containers.find((c) => c.type === 'workspace'));
   const open = useUI((s) => s.sidebarOpen);
   const setOpen = useUI((s) => s.setSidebarOpen);
 
@@ -32,16 +29,12 @@ export function Sidebar() {
           open ? 'translate-x-0 shadow-lift md:shadow-none' : 'max-md:invisible max-md:-translate-x-full',
         )}
       >
-        <div className="flex h-12 shrink-0 items-center gap-2 border-b border-line px-3">
-          <span className="grid size-6 place-items-center rounded-md bg-fg text-2xs font-semibold text-white">
-            {workspace && initials(workspace.name)}
-          </span>
-          <span className="truncate text-sm font-semibold">{workspace?.name}</span>
+        <div className="flex h-12 shrink-0 items-center border-b border-line px-1.5">
+          <WorkspaceMenu />
         </div>
         <nav aria-label="Workspace" className="min-h-0 flex-1 overflow-y-auto px-2 py-3">
           <WorkspaceTree />
         </nav>
-        <ArchivePanel />
       </aside>
     </>
   );

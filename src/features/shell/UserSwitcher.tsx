@@ -1,10 +1,9 @@
 import { Menu, MenuButton, MenuItem } from '@headlessui/react';
-import { Check, ChevronDown, RotateCcw } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import { useCurrentUser } from '../../store/hooks';
 import { useStore } from '../../store/store';
-import { useUI } from '../../store/ui';
 import { Avatar } from '../../ui/Avatar';
-import { MenuAction, MenuDivider, MenuPanel } from '../../ui/Menu';
+import { MenuPanel } from '../../ui/Menu';
 import { notify } from '../../ui/toast';
 
 const RolePill = ({ role }: { role: string }) => (
@@ -16,8 +15,6 @@ export function UserSwitcher() {
   const current = useCurrentUser();
   const users = useStore((s) => s.users);
   const switchUser = useStore((s) => s.switchUser);
-  const resetDemo = useStore((s) => s.resetDemo);
-  const closeTask = useUI((s) => s.closeTask);
 
   return (
     <Menu>
@@ -49,17 +46,6 @@ export function UserSwitcher() {
             </button>
           </MenuItem>
         ))}
-        <MenuDivider />
-        <MenuAction
-          icon={RotateCcw}
-          onClick={() => {
-            closeTask();
-            resetDemo();
-            notify('Demo data restored');
-          }}
-        >
-          Reset demo data
-        </MenuAction>
       </MenuPanel>
     </Menu>
   );

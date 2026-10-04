@@ -6,7 +6,7 @@ import { Toaster } from './ui/Toaster';
 
 export default function App() {
   return (
-    <div className="grid h-dvh grid-cols-[minmax(0,1fr)] md:grid-cols-[248px_minmax(0,1fr)]">
+    <div className="grid h-dvh grid-cols-[minmax(0,1fr)] grid-rows-[minmax(0,1fr)] md:grid-cols-[248px_minmax(0,1fr)]">
       <Sidebar />
       <div className="flex min-h-0 flex-col">
         <TopBar />

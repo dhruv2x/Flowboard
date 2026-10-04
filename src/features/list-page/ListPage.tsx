@@ -8,7 +8,9 @@ import { useUI } from '../../store/ui';
 import { Button } from '../../ui/Button';
 import { EmptyState } from '../../ui/EmptyState';
 import { Board } from '../board/Board';
+import { ListView } from '../list/ListView';
 import { StatusManager } from '../statuses/StatusManager';
+import { ViewToggle } from './ViewToggle';
 
 export function ListPage() {
   const listId = useUI((s) => s.selectedListId);
@@ -31,6 +33,7 @@ export function ListPage() {
 function ListContent({ data }: { data: ListData }) {
   const containers = useStore((s) => s.containers);
   const canManage = canManageContainers(useCurrentUser());
+  const view = useUI((s) => s.view);
   const [composeIn, setComposeIn] = useState<string | null>(null);
   const { list, statuses, tasks } = data;
   const path = ancestorsOf(containers, list.id);
@@ -58,6 +61,7 @@ function ListContent({ data }: { data: ListData }) {
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
+          <ViewToggle />
           {canManage && <StatusManager listId={list.id} statuses={statuses} />}
           <Button variant="primary" onClick={() => setComposeIn(statuses[0]?.id ?? null)}>
             <Plus className="size-3.5" />
@@ -66,7 +70,11 @@ function ListContent({ data }: { data: ListData }) {
         </div>
       </header>
       <div className="relative min-h-0 flex-1">
-        <Board data={data} composeIn={composeIn} onComposeIn={setComposeIn} />
+        {view === 'list' ? (
+          <ListView data={data} composeIn={composeIn} onComposeIn={setComposeIn} />
+        ) : (
+          <Board data={data} composeIn={composeIn} onComposeIn={setComposeIn} />
+        )}
       </div>
     </div>
   );
